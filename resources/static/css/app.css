@@ -1,0 +1,103 @@
+:root {
+    --surface: #ffffff;
+    --page-bg: #f3f5f9;
+    --accent: #2f6fed;
+    --accent-soft: #e8efff;
+    --text-dark: #0f172a;
+}
+
+body {
+    background: var(--page-bg);
+    color: var(--text-dark);
+}
+
+.navbar-brand {
+    letter-spacing: 0.3px;
+}
+
+.page-surface {
+    background: var(--surface);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
+
+.page-title {
+    font-weight: 700;
+}
+
+.card {
+    border: 1px solid #eef1f6;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+}
+
+.card-header {
+    background: transparent;
+    border-bottom: 1px solid #eef1f6;
+    font-weight: 600;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    color: #6b7280;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.03em;
+}
+
+.table tbody tr:hover {
+    background: #f8fafc;
+}
+
+.stat-card {
+    border-radius: 16px;
+    background: linear-gradient(135deg, #f8fbff, #eef4ff);
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+.link-soft {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.link-soft:hover {
+    text-decoration: underline;
+}
+
+.btn-soft {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid transparent;
+}
+
+.btn-soft:hover {
+    background: #dbe6ff;
+    color: var(--accent);
+}
+
+.badge {
+    font-weight: 500;
+}
+
+.app-footer {
+    background: transparent;
+}
+
+.auth-page {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #f6f9ff 0%, #eef3ff 100%);
+}
+
+.auth-card {
+    border-radius: 20px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+}
+

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::section})}">
+<section>
+    <div class="d-flex justify-content-between align-items-center">
+        <h4 class="page-title" th:text="'Карта холодильника #' + ${fridgeId}"></h4>
+        <a class="btn btn-success btn-sm" th:href="@{/products/add(fridgeId=${fridgeId})}">+ Добавить продукт</a>
+    </div>
+
+    <table class="table table-sm table-bordered mt-3">
+        <thead>
+        <tr>
+            <th>Зона</th>
+            <th>Ёмкость (units)</th>
+            <th>ACTIVE</th>
+            <th>EXPIRED</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="z : ${map}">
+            <td th:text="${z.zoneName()}"></td>
+            <td th:text="${z.capacityUnits()}"></td>
+            <td th:text="${z.activeCount()}"></td>
+            <td th:text="${z.expiredCount()}"></td>
+        </tr>
+        </tbody>
+    </table>
+</section>
+</html>

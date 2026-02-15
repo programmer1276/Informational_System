@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::section})}">
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4 class="page-title mb-0">Продукты</h4>
+        <a class="btn btn-outline-secondary btn-sm" th:href="@{/admin}">Назад</a>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <form class="row g-2 align-items-end" th:action="@{/admin/products}" method="get" th:object="${filter}">
+                <div class="col-md-4">
+                    <label class="form-label">Email владельца</label>
+                    <input class="form-control" th:field="*{ownerEmail}" placeholder="owner@example.com">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Холодильник</label>
+                    <select class="form-select" th:field="*{fridgeId}">
+                        <option value="">Все</option>
+                        <option th:each="f : ${fridges}" th:value="${f.fridgeId}" th:text="${f.name}"></option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Статус</label>
+                    <select class="form-select" th:field="*{status}">
+                        <option value="">Любой</option>
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="EXPIRED">EXPIRED</option>
+                        <option value="TAKEN">TAKEN</option>
+                        <option value="DISPOSED">DISPOSED</option>
+                        <option value="EATEN">EATEN</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100" type="submit">Найти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="text-muted p-3" th:if="${#lists.isEmpty(products)}">Нет данных</div>
+            <form th:action="@{/admin/products/bulk-delete}" method="post" th:if="${!#lists.isEmpty(products)}" id="bulkDeleteForm">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div class="p-3 d-flex justify-content-end">
+                    <button class="btn btn-danger btn-sm" type="submit" id="bulkDeleteBtn">Удалить выбранные</button>
+                </div>
+                <table class="table table-hover align-middle mb-0">
+                <thead>
+                <tr>
+                    <th style="width:32px"><input type="checkbox" id="selectAll"/></th>
+                    <th>Продукт</th>
+                    <th>Владелец</th>
+                    <th>Статус</th>
+                    <th>Срок</th>
+                    <th class="text-end">Действия</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="p : ${products}">
+                    <td>
+                        <input type="checkbox" name="ids" th:value="${p.productId}" class="rowCheckbox"/>
+                    </td>
+                    <td>
+                        <div class="fw-semibold" th:text="${p.name}">Product</div>
+                        <div class="text-muted small" th:text="${p.zone.fridge.name}">Fridge</div>
+                    </td>
+                    <td th:text="${p.owner.email}">owner</td>
+                    <td>
+                        <span class="badge bg-secondary" th:text="${p.status}">STATUS</span>
+                    </td>
+                    <td>
+                        <span th:if="${p.expiresAt != null}"
+                              th:text="${#temporals.format(p.expiresAt, 'dd.MM.yyyy HH:mm')}"></span>
+                        <span th:if="${p.expiresAt == null}" class="text-muted">—</span>
+                    </td>
+                    <td class="text-end">
+                        <div class="d-inline-flex gap-2">
+                            <form th:action="@{/admin/products/{id}/status(id=${p.productId})}" method="post" th:object="${statusForm}">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <input type="hidden" name="status" value="DISPOSED"/>
+                                <input type="hidden" name="comment" value="Admin action"/>
+                                <button class="btn btn-outline-warning btn-sm" type="submit">DISPOSE</button>
+                            </form>
+                            <form th:action="@{/admin/products/{id}/status(id=${p.productId})}" method="post">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <input type="hidden" name="status" value="TAKEN"/>
+                                <input type="hidden" name="comment" value="Admin action"/>
+                                <button class="btn btn-outline-primary btn-sm" type="submit">TAKEN</button>
+                            </form>
+                            <form th:action="@{/admin/products/{id}/delete(id=${p.productId})}" method="post" onsubmit="return confirmDelete();">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                <button class="btn btn-outline-danger btn-sm" type="submit">Удалить</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Select / deselect all checkboxes
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectAll = document.getElementById('selectAll');
+            if (!selectAll) return;
+            const rowCheckboxes = document.querySelectorAll('.rowCheckbox');
+            selectAll.addEventListener('change', function () {
+                rowCheckboxes.forEach(cb => cb.checked = selectAll.checked);
+            });
+
+            // confirm bulk delete
+            const bulkForm = document.getElementById('bulkDeleteForm');
+            if (bulkForm) {
+                bulkForm.addEventListener('submit', function (e) {
+                    const any = Array.from(rowCheckboxes).some(cb => cb.checked);
+                    if (!any) {
+                        e.preventDefault();
+                        alert('Выберите хотя бы один продукт для удаления.');
+                        return false;
+                    }
+                    if (!confirm('Удалить выбранные продукты? Это действие необратимо.')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            }
+        });
+
+        function confirmDelete() {
+            return confirm('Удалить этот продукт? Это действие необратимо.');
+        }
+    </script>
+</section>
+</html>

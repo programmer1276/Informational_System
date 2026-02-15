@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <style>
+        body { font-family: Arial, Helvetica, sans-serif; color:#222 }
+        .container { max-width:600px; margin:0 auto; padding:20px; }
+        .footer { color:#666; font-size:12px; margin-top:20px }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Добро пожаловать в Fridge IS, <span th:text="${user.name}">User</span>!</h2>
+    <p>Спасибо за регистрацию. Вы можете зайти в систему, используя ваш email: <strong th:text="${user.email}">email</strong>.</p>
+    <p>Если у вас возникнут вопросы, ответьте на это письмо.</p>
+
+    <div class="footer">Fridge IS &mdash; управление продуктами и холодильниками</div>
+</div>
+</body>
+</html>
